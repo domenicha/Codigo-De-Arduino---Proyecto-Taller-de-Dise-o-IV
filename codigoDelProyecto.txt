@@ -143,7 +143,6 @@ void loop(){
     }
            
     lcd.setCursor(0,0);
-    //lcd.autoscroll(); //OJOOOOOOOOOOOOOOOOOOOO
     lcd.print(uncent);
     lcd.setCursor(3,0);
     lcd.print(cincocent);
