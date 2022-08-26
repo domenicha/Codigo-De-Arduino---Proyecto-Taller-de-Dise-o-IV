@@ -1,0 +1,170 @@
+//El codigo soporta 6 tipos de monedas:0.01 ctv, 0.05 ctv, 0.10 ctv, 0.25 ctv, 0.50 ctv, 1.00 dolar 
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(34,16,2); //Direccion: 34, columnas: 16, filas:2
+
+int uncent = 0;
+int cincocent = 0;
+int diezcent = 0;
+int veinticincocent = 0;
+int cincuentacent = 0;
+int undolar = 0;
+
+int beforeReaduncent = 0;
+int beforeReadcincocent = 0;
+int beforeReaddiezcent = 0;
+int beforeReadveinticincocent = 0;
+int beforeReadcincuentacent = 0;
+int beforeReadundolar = 0;
+
+
+//Leds
+int led1 = 7;
+int led2 = 6;
+int led3 = 5;
+int led4 = 4;
+int led5 = 3;
+int led6 = 2;
+
+// Interruptor y pulsador
+const int interruptor = A1; //pin del interruptor de alimentacion
+int interrupest = 0; //Inicializar a 0 el valor del interruptor
+const int puls = A0;
+int pulsador = 0;
+int pulsador2 = 4;
+
+void setup(){
+
+  pinMode(13,INPUT); //Declaracion del pin del sensor 1 (13), destinado para 1   ctv, como entrada
+  pinMode(12,INPUT); //Declaracion del pin del sensor 2 (12), destinado para 5  ctvs, como entrada
+  pinMode(11,INPUT); //Declaracion del pin del sensor 3 (11), destinado para 10 ctvs, como entrada
+  pinMode(10,INPUT); //Declaracion del pin del sensor 4 (10), destinado para 25 ctvs, como entrada
+  pinMode(9,INPUT);  //Declaracion del pin del sensor 5 ( 9), destinado para 50 ctvs, como entrada
+  pinMode(8,INPUT);  //Declaracion del pin del sensor 3 ( 8), destinado para 1 dolar, como entrada
+  pinMode(7,OUTPUT);
+  pinMode(6,OUTPUT);
+  pinMode(5,OUTPUT);
+  pinMode(4,OUTPUT);
+  pinMode(3,OUTPUT);
+  pinMode(2,OUTPUT);
+  pinMode(interruptor, INPUT); //Declaracion del pin del interruptor ( 2), como entrada
+  pinMode(puls, INPUT);
+}
+
+
+void loop(){
+  lcd.init(); //Inicializa la pantalla LCD y el I2C
+  lcd.backlight(); //Prende la luz posterior de la pantalla LCD
+  interrupest = digitalRead(interruptor);
+  if (interrupest == HIGH){ //ENCENDIDO
+    lcd.display(); //Inicializa la pantalla LCD y el I2C
+    lcd.backlight(); //Prende la luz posterior de la pantalla LCD
+    
+    //10□ 1 CENTAVO
+    if (digitalRead(13) == 0 && beforeReaduncent == 1){
+      Serial.println("10□□ □□□");
+      uncent += 1;
+      beforeReaduncent = 0;
+      digitalWrite(led1,HIGH);
+      delay(500);
+      digitalWrite(led1,LOW);
+    } else if (digitalRead(13) == 1){
+      beforeReaduncent = 1;
+    }
+    //50□ 5 CENTAVOS
+    if (digitalRead(12) == 0 && beforeReadcincocent == 1){
+      Serial.println("50□□ □□□");
+      cincocent += 1;
+      beforeReadcincocent = 0;
+      digitalWrite(led2,HIGH);
+      delay(500);
+      digitalWrite(led2,LOW);
+    } else if (digitalRead(12) == 1){
+      beforeReadcincocent = 1;
+    }
+    //100□ 10 CENTAVOS
+    if (digitalRead(11) == 0 && beforeReaddiezcent == 1){
+      Serial.println("100□□ □□□");
+      diezcent += 1;
+      beforeReaddiezcent = 0;
+      digitalWrite(led3,HIGH);
+      delay(500);
+      digitalWrite(led3,LOW);
+    } else if (digitalRead(11) == 1){
+      beforeReaddiezcent = 1;
+    }
+    //500□ 25 CENTAVOS
+    if (digitalRead(10) == 0 && beforeReadveinticincocent == 1){
+      Serial.println("500□□ □□□");
+      veinticincocent += 1;
+      beforeReadveinticincocent = 0;
+      digitalWrite(led4,HIGH);
+      delay(500);
+      digitalWrite(led4,LOW);
+    } else if (digitalRead(10) == 1){
+      beforeReadveinticincocent = 1;
+    }
+    //500□ 50 CENTAVOs
+    if (digitalRead(9) == 0 && beforeReadcincuentacent == 1){
+      Serial.println("1000□□ □□□");
+      cincuentacent += 1;
+      beforeReadcincuentacent = 0;
+      digitalWrite(led5,HIGH);
+      delay(500);
+      digitalWrite(led5,LOW);
+    } else if (digitalRead(9) == 1){
+      beforeReadcincuentacent = 1;
+    }
+    //500□ UN DOLAR
+    if (digitalRead(8) == 0 && beforeReadundolar == 1){
+      Serial.println("1500□□ □□□");
+      undolar += 1;
+      beforeReadundolar = 0;
+      digitalWrite(led6,HIGH);
+      delay(500);
+      digitalWrite(led6,LOW);
+    } else if (digitalRead(8) == 1){
+      beforeReadundolar = 1;
+    }
+    //Pulsador
+    if (digitalRead(puls) == 1){
+      lcd.setCursor(15,1);
+      lcd.print(pulsador);
+      uncent = 0;
+      cincocent = 0;
+      diezcent = 0;
+      veinticincocent = 0;
+      cincuentacent = 0;
+      undolar = 0;
+    } else {
+      lcd.setCursor(14,1);
+      lcd.print(pulsador2);
+    }
+           
+    lcd.setCursor(0,0);
+    //lcd.autoscroll(); //OJOOOOOOOOOOOOOOOOOOOO
+    lcd.print(uncent);
+    lcd.setCursor(3,0);
+    lcd.print(cincocent);
+    lcd.setCursor(6,0);
+    lcd.print(diezcent);
+    lcd.setCursor(9,0);
+    lcd.print(veinticincocent);
+    lcd.setCursor(12,0);
+    lcd.print(cincuentacent);
+    lcd.setCursor(15,0);
+    lcd.print(undolar);
+    lcd.setCursor(0,1);
+    lcd.print("Total $: ");
+    float suma=uncent*0.01+cincocent*0.05+diezcent*0.10+veinticincocent*0.25+cincuentacent*0.50+undolar*1; //Variable que lee decimales
+    lcd.print(suma);
+    delay(1000);
+    
+  }
+  else{ //APAGADO
+    lcd.noDisplay(); //Deja de mandar la informacion al LCD
+    lcd.noBacklight();//Apaga la luz posterior del display
+  }
+  
+}
