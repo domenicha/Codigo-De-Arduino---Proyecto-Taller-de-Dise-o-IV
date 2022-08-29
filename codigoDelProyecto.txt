@@ -1,6 +1,7 @@
 //El codigo soporta 6 tipos de monedas:0.01 ctv, 0.05 ctv, 0.10 ctv, 0.25 ctv, 0.50 ctv, 1.00 dolar 
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
+#include <EEPROM.h>
 
 LiquidCrystal_I2C lcd(34,16,2); //Direccion: 34, columnas: 16, filas:2
 
